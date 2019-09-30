@@ -2,6 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Need microphone for voice recording</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Need permission to add Profile photo</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Need permission to add Profile Photo</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
@@ -25,7 +31,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.682751037080-cfe0tad8ifel644o0mq2r4ovo2ituuq4</string>
+				<string>com.googleusercontent.apps.465545615636-02kb8gvtchhqg6luc8m53fmu4vqaeblr</string>
 			</array>
 		</dict>
 	</array>

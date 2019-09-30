@@ -599,6 +599,7 @@ BoxDecoration _borderSelection(){
     Firestore.instance
         .collection('events')
         .add(eventData).then((snapshot) {
+      snapshot.reference.updateData({'documentID': snapshot.documentId})
       Fluttertoast.showToast(msg: "Successfully Created Event");
       Navigator.of(context).pop();
     }).catchError((err) {

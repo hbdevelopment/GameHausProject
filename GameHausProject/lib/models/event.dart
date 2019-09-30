@@ -12,10 +12,12 @@ class Event {
   String type;
   String user_id;
   String user_nickname;
+  String documentID;
 
-  Event(this.title, this.description, this.game, this.image_url, this.dateTime, this.capacity, this.location, this.type, this.user_id, this.user_nickname);
+  Event(this.documentID, this.title, this.description, this.game, this.image_url, this.dateTime, this.capacity, this.location, this.type, this.user_id, this.user_nickname);
 
   Event.fromSnapshot(DocumentSnapshot snapshot) :
+    documentID=snapshot["documentID"],
     id = snapshot["id"],
     title = snapshot["title"],
     description = snapshot["description"],
@@ -30,6 +32,7 @@ class Event {
 
   toJson() {
     return {
+      "documentID": documentID,
       "id": id,
       "title": title,
       "description": description,

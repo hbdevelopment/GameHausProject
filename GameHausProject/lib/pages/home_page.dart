@@ -59,6 +59,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    //updatedatabase();
     controller = new TabController(vsync: this, length: 2);
     _checkEmailVerification();
     _registerNotifications();
@@ -275,6 +276,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         .limit(60)
         .snapshots();
   }
+void updatedatabase() async{
+  var query = await Firestore.instance.collectionGroup("events").getDocuments();
+  for (var document in query.documents){
+    await document.reference.updateData({'title': 'New Title2'});
+  }
+
+
+}
 
   Widget _buildEventBox(dynamic eventData) {
     String name = "";
@@ -818,6 +827,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     Firestore.instance.runTransaction((transaction) async {
       await transaction.set(documentRef, {
         'fromId': widget.currentUser.id,
+        'fromPhotoUrl': widget.currentUser.photoUrl,
         'fromNickname': widget.currentUser.nickname,
         'timestamp': DateTime.now().millisecondsSinceEpoch.toString(),
         'content': text,
@@ -830,6 +840,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     GChatMessage gmessage = new GChatMessage(
       text: message['content'],
       nickname: message['fromNickname'],
+      photoUrl: message['fromPhotoUrl'],
       aController: new AnimationController(
           duration: new Duration(milliseconds: 600), vsync: this),
     );
@@ -1049,17 +1060,20 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 Widget AddEventIcon(){
   bool _isIos = (Theme.of(context).platform == TargetPlatform.iOS);
   if (_isIos==true){
-  return Transform.scale(
-    scale: 4,
-    child:IconButton(
+//  return Transform.scale(
+  //  scale: 4,
+    return IconButton(
       onPressed: () {
         setState(() {
           _navigateToCreateEventPage();
         });
       },
-      icon: Image.asset('assets/images/gh_add_icon.png')
+      icon:
+      Transform.scale(scale: 4,
+      child: Image.asset('assets/images/gh_add_icon.png')
     )
-  );
+    );
+  //);
   }
 return IconButton(
   onPressed: () {
@@ -1070,6 +1084,16 @@ return IconButton(
   icon: Image.asset('assets/images/gh_add_icon.png')
 );
 }
+
+NetworkImage GetImage(){
+  print(widget.currentUser.photoUrl);
+  if (widget.currentUser.photoUrl==null || widget.currentUser.photoUrl==''){
+     return NetworkImage('https://robohash.org/'+(_userNickname ?? ""));
+  }else{
+    return NetworkImage(widget.currentUser.photoUrl);
+  }
+}
+
   Widget _drawerHeaderTab() {
 
     return Column(
@@ -1100,7 +1124,7 @@ return IconButton(
                   width: 45,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                        image: NetworkImage('https://robohash.org/'+(_userNickname ?? "")),
+                        image: GetImage(),
                         fit: BoxFit.fitHeight
                     ),
                     borderRadius: new BorderRadius.all(new Radius.circular(100.0)),

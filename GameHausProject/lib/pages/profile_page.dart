@@ -9,6 +9,7 @@ import 'package:ghfrontend/services/date_helper.dart';
 import 'package:ghfrontend/services/users.dart';
 import 'package:ghfrontend/style/theme_style.dart' as Style;
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:image_picker/image_picker.dart';
 
 
 class ProfilePage extends StatefulWidget {
@@ -113,12 +114,28 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  SelectImage() async{
+    var galleryfile=await ImagePicker.pickImage(source: ImageSource.gallery);
+  }
+
+NetworkImage GetImage(){
+  print(mUser.photoUrl);
+  if (mUser.photoUrl==null || mUser.photoUrl==""){
+    return NetworkImage('https://robohash.org/'+(mUser.nickname ?? ""));
+  }else{
+    return NetworkImage(mUser.photoUrl);
+  }
+}
+
   Widget _createProfilePicture(){
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         Center(
+          child:
+          GestureDetector(
+          onLongPress: SelectImage,
           child: Container(
             height: 170,
             width: 170,
@@ -126,7 +143,7 @@ class _ProfilePageState extends State<ProfilePage> {
             margin: EdgeInsets.only(top: 25,bottom: 15),
             decoration: BoxDecoration(
               image: DecorationImage(
-                  image: NetworkImage('https://robohash.org/'+(mUser.nickname ?? "")),
+                  image: GetImage(),
                   fit: BoxFit.cover
               ),
               borderRadius: new BorderRadius.all(new Radius.circular(100.0)),
@@ -136,7 +153,8 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
 
             ),
-          ),
+          )
+        ),
         ),
 
         Text(mUser.nickname, style: Style.TextTemplate.profile_name, textAlign: TextAlign.center,),
@@ -147,6 +165,8 @@ class _ProfilePageState extends State<ProfilePage> {
       ],
     );
   }
+
+
 
   void _getUserDetails() async{
 
