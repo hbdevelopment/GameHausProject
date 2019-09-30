@@ -3,23 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>682751037080-cfe0tad8ifel644o0mq2r4ovo2ituuq4.apps.googleusercontent.com</string>
+	<string>465545615636-02kb8gvtchhqg6luc8m53fmu4vqaeblr.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.682751037080-cfe0tad8ifel644o0mq2r4ovo2ituuq4</string>
-	<key>ANDROID_CLIENT_ID</key>
-	<string>682751037080-pt3iss8a9rshi7k3o5grjihp1g77bo1v.apps.googleusercontent.com</string>
+	<string>com.googleusercontent.apps.465545615636-02kb8gvtchhqg6luc8m53fmu4vqaeblr</string>
 	<key>API_KEY</key>
-	<string>AIzaSyArUeyLlkNm-yjE4abQ33O8dpE5DvpODUc</string>
+	<string>AIzaSyBu35GzQM3_ARVqfAeV1O99jKbXRL9txwo</string>
 	<key>GCM_SENDER_ID</key>
-	<string>682751037080</string>
+	<string>465545615636</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.example.ghfrontend</string>
 	<key>PROJECT_ID</key>
-	<string>ghaus-ad516</string>
+	<string>gamehausfirebase</string>
 	<key>STORAGE_BUCKET</key>
-	<string>ghaus-ad516.appspot.com</string>
+	<string>gamehausfirebase.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -31,8 +29,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:682751037080:ios:7dab1c5f313e37b7</string>
+	<string>1:465545615636:ios:22217e09795e0257d2ca01</string>
 	<key>DATABASE_URL</key>
-	<string>https://ghaus-ad516.firebaseio.com</string>
+	<string>https://gamehausfirebase.firebaseio.com</string>
 </dict>
 </plist>

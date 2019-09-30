@@ -1,10 +1,16 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
+import 'package:ghfrontend/models/guser.dart';
 import 'package:intl/intl.dart';
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 
 class EventFormPage extends StatefulWidget{
+  EventFormPage({Key key,this.gameID, this.currentUser})
+  : super(key: key);
+  String gameID;
+  GUser currentUser;
+
   @override
   State<StatefulWidget> createState() => new EventFormPageState();
 }
@@ -42,19 +48,30 @@ class EventFormPageState extends State<EventFormPage> {
     }
   }
 
-  void _handleSubmitted(String name, String content, String date, String time) {
+  void _handleSubmitted(String name, String content, String date, String time) async{
     print(name);
     print(content);
-    var documentRef = Firestore.instance
+    var documentRef = await Firestore.instance
         .collection('events')
         .document();
+    var snapshot=await Firestore.instance.collection('users').document(widget.currentUser.id).get();
+    String nickname=snapshot.data['nickname'];
+    DateTime date = DateTimeField.combine(currentdate, currenttime);
     Firestore.instance.runTransaction((transaction) async {
       await transaction.set(documentRef, {
-        'id': DateTime.now().millisecondsSinceEpoch.toString(),
-        'name': name,
-        'content': content,
+        'id': widget.gameID,
+        'image_url': "https://static.wixstatic.com/media/af053d_f8007a7ee1244815997340ec183f3189~mv2.gif",
+        'location': "Somewhere in the world",
+        'user_id': widget.currentUser.id,
+        'title': name,
+        'type': "Casual",
+        'description': content,
+        'dateTime': date,
         'date': date,
-        'time': time
+        'time': time,
+        'documentID': documentRef.documentID,
+        'user_nickname': nickname
+
       });
     });
   }

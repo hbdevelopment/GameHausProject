@@ -1,75 +1,42 @@
 {
   "project_info": {
-    "project_number": "682751037080",
-    "firebase_url": "https://ghaus-ad516.firebaseio.com",
-    "project_id": "ghaus-ad516",
-    "storage_bucket": "ghaus-ad516.appspot.com"
+    "project_number": "465545615636",
+    "firebase_url": "https://gamehausfirebase.firebaseio.com",
+    "project_id": "gamehausfirebase",
+    "storage_bucket": "gamehausfirebase.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:682751037080:android:7dab1c5f313e37b7",
+        "mobilesdk_app_id": "1:465545615636:android:0a171394e0384dd7d2ca01",
         "android_client_info": {
           "package_name": "com.example.ghfrontend"
         }
       },
       "oauth_client": [
         {
-          "client_id": "682751037080-pt3iss8a9rshi7k3o5grjihp1g77bo1v.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.ghfrontend",
-            "certificate_hash": "6b700292558b98b92246275413c5a87b8ba7f51a"
-          }
-        },
-        {
-          "client_id": "682751037080-5puv21ha156g8lpk4o4o9q9n3gtrho0t.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.ghfrontend",
-            "certificate_hash": "3e48da03fb10689a51b74e9eb9a1d6d338788d59"
-          }
-        },
-        {
-          "client_id": "682751037080-4d1u5e27a62s0l6uu6ro81hjbl8kso5a.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.ghfrontend",
-            "certificate_hash": "b2118b6e969149294e7ef768c6184a13125124b1"
-          }
-        },
-        {
-          "client_id": "682751037080-0aoplgup13vos7ft8jr8fmno4l2gp7av.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.ghfrontend",
-            "certificate_hash": "56c4cc5dfcbb3db8f3985764d400c7c00cbbcf91"
-          }
-        },
-        {
-          "client_id": "682751037080-fl9sg6e9bpm9f3ta4joafesa6h3gc8a3.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.ghfrontend",
-            "certificate_hash": "4f45a1f8aba4ac19e7124ce973f8745092d70922"
-          }
-        },
-        {
-          "client_id": "682751037080-eon6nsjlq94v3413mo2t0tosf99eq1tp.apps.googleusercontent.com",
+          "client_id": "465545615636-ddho2c3cq7lft0a19mrt7dhbh1v9f0og.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDRNwFqJ11rycN77tKDpWQp1vfX8n55t8o"
+          "current_key": "AIzaSyB29n0UCEtV0PDo5TejrfvVmF9kg5GtERg"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "682751037080-eon6nsjlq94v3413mo2t0tosf99eq1tp.apps.googleusercontent.com",
+              "client_id": "465545615636-ddho2c3cq7lft0a19mrt7dhbh1v9f0og.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "465545615636-02kb8gvtchhqg6luc8m53fmu4vqaeblr.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.ghfrontend"
+              }
             }
           ]
         }

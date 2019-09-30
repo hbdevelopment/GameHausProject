@@ -7,9 +7,10 @@ import 'datetime.dart';
 import 'chat_page.dart';
 
 class GamePage extends StatefulWidget {
-  GamePage({Key key, this.title, this.auth, this.currentUser, this.onSignedOut})
+  GamePage({Key key,this.documentID, this.title, this.auth, this.currentUser, this.onSignedOut})
   : super(key: key);
 
+  final String documentID;
   final String title;
   final BaseAuth auth;
   final VoidCallback onSignedOut;
@@ -204,7 +205,7 @@ List addToFixedList(List list){
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                content: new EventFormPage(),
+                content: new EventFormPage(gameID: widget.documentID, currentUser: widget.currentUser),
               );
             });
           }
@@ -228,7 +229,7 @@ List addToFixedList(List list){
 
           Widget _buildRoomsList(String collection, bool isEvent) {
             return new StreamBuilder(
-              stream: Firestore.instance.collection(collection).limit(30).snapshots(),
+              stream: Firestore.instance.collection(collection).where("id",isEqualTo: widget.documentID).limit(30).snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return Center(
@@ -247,6 +248,13 @@ List addToFixedList(List list){
                 });
               }
 
+              Widget returntext(dynamic roomData, bool isEvent){
+                if (isEvent==true){
+                  return Text(roomData['title']);
+                }else{
+                  return Text(roomData['name']);
+                }
+              }
               Widget _buildRoomBox(dynamic roomData, bool isEvent) {
                 return Center(
                   child: Container(
@@ -261,8 +269,8 @@ List addToFixedList(List list){
                         Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
                           ListTile(
                             leading: Icon(Icons.home),
-                            title: Text(roomData['name']),
-                            subtitle: Text('ID: ' + roomData['id']),
+                            title: returntext(roomData, isEvent),
+                            //subtitle: Text('ID: ' + roomData['id']),
                           ),
                           ButtonTheme.bar(
                             // make buttons use the appropriate styles for cards
@@ -281,7 +289,7 @@ List addToFixedList(List list){
                                   child: const Text('JOIN'),
                                   onPressed: () {
                                     _navigateToChat(
-                                      roomData['id'], roomData['name']);
+                                      roomData.documentID, roomData['title']);
                                     },
                                   ),
                                 ],
@@ -315,13 +323,16 @@ List addToFixedList(List list){
                                   tabs: <Tab>[
                                     new Tab(icon: new Icon(Icons.arrow_upward), text: 'Event'),
                                     new Tab(icon: new Icon(Icons.arrow_downward), text: 'Chat'),
+                                    //new Tab(text: 'Profile')
                                   ]
                                 )
                               ),
                               body: new TabBarView(controller: controller, children: <Widget>[
 
                                 _buildList('events', true),
-                                _buildList('channels', false)
-                              ]));
+                                ChatPage(title: widget.title, roomId: widget.documentID, auth: widget.auth, currentUser: widget.currentUser, onSignedOut: widget.onSignedOut)]
+
+
+                              ));
                             }
                           }

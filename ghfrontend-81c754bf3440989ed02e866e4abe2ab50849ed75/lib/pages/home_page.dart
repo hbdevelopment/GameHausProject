@@ -104,11 +104,12 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void _navigateToChat(String roomId, String roomName) {
+  void _navigateToChat(String roomId, String roomName, String documentID) {
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => GamePage(
+                documentID: documentID,
                 title: '$roomName',
                 currentUser: widget.currentUser,
                 auth: widget.auth)));
@@ -154,7 +155,7 @@ class _HomePageState extends State<HomePage> {
                   ListTile(
                     leading: Icon(Icons.home),
                     title: Text(roomData['name']),
-                    subtitle: Text('ID: ' + roomData['id']),
+                  //  subtitle: Text('ID: ' + roomData['id']),
                   ),
                   ButtonTheme.bar(
                     // make buttons use the appropriate styles for cards
@@ -163,7 +164,7 @@ class _HomePageState extends State<HomePage> {
                         FlatButton(
                           child: const Text('JOIN'),
                           onPressed: () {
-                            _navigateToChat(roomData['id'], roomData['name']);
+                            _navigateToChat(roomData['id'], roomData['name'], roomData.documentID);
                           },
                         ),
                       ],
