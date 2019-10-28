@@ -2,8 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:ghfrontend/models/guser.dart';
-import 'package:ghfrontend/pages/login_signup_page.dart';
-import 'package:ghfrontend/pages/preferences_page.dart';
 import 'package:ghfrontend/pages/sign_in_page.dart';
 import 'package:ghfrontend/pages/sign_up_page.dart';
 import 'package:ghfrontend/services/authentication.dart';
@@ -236,14 +234,14 @@ class _RootPageState extends State<RootPage> {
       case AppStatus.STARTUP:
         return _buildSignInPage();
         break;
-      case AppStatus.DO_LOGIN:
-        return new LoginSignUpPage(
-            auth: widget.auth, onSignedIn: _onLoggedIn, onSignedOut:_onSignedOut, isLogin: true);
-        break;
-      case AppStatus.DO_SIGN_UP:
-        return new LoginSignUpPage(
-            auth: widget.auth, onSignedIn: _onLoggedIn, onSignedOut:_onSignedOut, isLogin: false);
-        break;
+      // case AppStatus.DO_LOGIN:
+      //   return new LoginSignUpPage(
+      //       auth: widget.auth, onSignedIn: _onLoggedIn, onSignedOut:_onSignedOut, isLogin: true);
+      //   break;
+      // case AppStatus.DO_SIGN_UP:
+      //   return new LoginSignUpPage(
+      //       auth: widget.auth, onSignedIn: _onLoggedIn, onSignedOut:_onSignedOut, isLogin: false);
+      //   break;
       case AppStatus.LOGGED_IN:
         if (_currentUser != null) {
 //          if (_currentUser.incompletePreferences()) {

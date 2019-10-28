@@ -15,7 +15,7 @@ import 'package:ghfrontend/services/date_helper.dart';
 import 'package:ghfrontend/services/users.dart';
 import 'package:ghfrontend/style/theme_style.dart' as Style;
 import 'videoApp.dart';
-import 'chat_page.dart';
+//import 'chat_page.dart';
 import 'gamestore.dart';
 
 class HomePage extends StatefulWidget {
@@ -1184,6 +1184,54 @@ Widget buildRoomsList(){
               ],
             )),
       ],
+    );
+  }
+}
+
+class GChatMessage extends StatelessWidget {
+  GChatMessage({this.text, this.aController, this.nickname});
+
+  final String text;
+  final String nickname;
+  final AnimationController aController;
+
+  Widget _wrapWithEaseOutAnimation(Widget toWrap) {
+    return new SizeTransition(
+      sizeFactor:
+          new CurvedAnimation(parent: aController, curve: Curves.easeOut),
+      axisAlignment: 0.0,
+      child: toWrap,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new Container(
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      child: new Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          new Container(
+              margin: const EdgeInsets.only(right: 12.0),
+              child: new CircleAvatar(
+                backgroundImage: NetworkImage('https://robohash.org/'+(nickname ?? "")),
+                //child: new Text(nickname[0],style: Style.TextTemplate.button_signup,)
+              )
+              ),
+          new Expanded(
+            child: new Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                new Text(nickname, style: Style.TextTemplate.chat_title),
+                new Container(
+                  margin: const EdgeInsets.only(top: 4.0),
+                  child: new Text(text, style: Style.TextTemplate.chat_description,),
+                )
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 }
