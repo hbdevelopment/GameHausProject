@@ -228,6 +228,14 @@ Widget buildRoomsList(){
               ),
             );
           } else {
+            if (snapshot.data.documents.length == 0) {
+              return Center(
+                child: Text(
+                  "No Rooms",
+                  style: Style.TextTemplate.tf_hint,
+                ),
+              );
+            };
             return ListView.builder(
               shrinkWrap: true,
               itemBuilder: (_, int index) => _buildRoomBox(
