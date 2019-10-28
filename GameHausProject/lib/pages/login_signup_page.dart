@@ -50,6 +50,7 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
     return false;
   }
 
+
   // Perform login or signup
   void _validateAndSubmit(bool isGoogleSignIn) async {
 
@@ -132,6 +133,7 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
       print(e);
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -224,6 +226,7 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
     }
   }
 
+
   Widget _showLogo() {
     return new Hero(
       tag: 'hero',
@@ -256,6 +259,8 @@ class _LoginSignUpPageState extends State<LoginSignUpPage> {
       ),
     );
   }
+
+
 
   Widget _showPasswordInput() {
     return Padding(

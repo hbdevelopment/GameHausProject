@@ -37,7 +37,6 @@ class _CreateEventPageState extends State<CreateEventPage> {
   String selectedGame = "";
   DateTime selectedDate;
   TimeOfDay selectedTime;
-  DateTime fullDateTime;
   String selectedLocation = "";
   int capacity = 0;
   String type = "Casual";
@@ -531,7 +530,7 @@ BoxDecoration _borderSelection(){
           selectedRoomId = "eGKPNy54lvyQoatYE5Mx";
           break;
         case "OVERWATCH":
-          selectedRoomId = "GwLgl63odJIzVODhfxvn";
+          selectedRoomId = "5crWuxFMuNY7E9G9xdz9";
           break;
         case "Madison eSports Club":
           selectedRoomId="6CkGuBewHOuPOKmhl2NI";
@@ -576,6 +575,8 @@ BoxDecoration _borderSelection(){
           GUser userData = GUser.fromSnapshot(snapshot);
           DateTime date = DateTimeField.combine(selectedDate, selectedTime);
           Event event = Event(
+              "",
+              selectedRoomId,
               title,
               description,
               selectedGame,
@@ -599,7 +600,7 @@ BoxDecoration _borderSelection(){
     Firestore.instance
         .collection('events')
         .add(eventData).then((snapshot) {
-      snapshot.reference.updateData({'documentID': snapshot.documentId})
+        snapshot.updateData({'documentID': snapshot.documentID});
       Fluttertoast.showToast(msg: "Successfully Created Event");
       Navigator.of(context).pop();
     }).catchError((err) {

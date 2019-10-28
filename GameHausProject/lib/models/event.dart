@@ -14,7 +14,7 @@ class Event {
   String user_nickname;
   String documentID;
 
-  Event(this.documentID, this.title, this.description, this.game, this.image_url, this.dateTime, this.capacity, this.location, this.type, this.user_id, this.user_nickname);
+  Event(this.documentID, this.id, this.title, this.description, this.game, this.image_url, this.dateTime, this.capacity, this.location, this.type, this.user_id, this.user_nickname);
 
   Event.fromSnapshot(DocumentSnapshot snapshot) :
     documentID=snapshot["documentID"],

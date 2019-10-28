@@ -14,8 +14,9 @@ import 'package:ghfrontend/services/authentication.dart';
 import 'package:ghfrontend/services/date_helper.dart';
 import 'package:ghfrontend/services/users.dart';
 import 'package:ghfrontend/style/theme_style.dart' as Style;
-
+import 'videoApp.dart';
 import 'chat_page.dart';
+import 'gamestore.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.auth, this.currentUser, this.onSignedOut, this.users})
@@ -59,7 +60,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    //updatedatabase();
+    updatedatabase();
     controller = new TabController(vsync: this, length: 2);
     _checkEmailVerification();
     _registerNotifications();
@@ -71,7 +72,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     currentIndexPage = 0;
   }
 
+  void updatedatabase() async{
+    var query = await Firestore.instance.collectionGroup("events").where('__name__', isEqualTo: "events/4q9H1qbP8oJdk1ke9PGb").getDocuments();
+    for (var document in query.documents){
+      await document.reference.updateData({'title': 'New Title5'});
+    }
 
+
+  }
 
   void _checkEmailVerification() async {
     _isEmailVerified = await widget.auth.isEmailVerified();
@@ -170,13 +178,45 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 currentUser: widget.currentUser,isMe: false, userId: user_id,)));
   }
 
+void toGameStore(){
+  Navigator.push(
+      context, MaterialPageRoute(builder: (context) => GameStorePage(auth: widget.auth,
+        currentUser: widget.currentUser,
+        users: widget.users,
+        navigateToRoom: updatePage)));
+}
+updatePage(String id, String name){
+  setState(() {
+    selectedRoomId=id;
+    selectedRoomName=name;
+  });
+}
+Widget buildRoomsList(){
+  return new Column(
+    children: <Widget> [
+      _buildGameRoomsList(),
+      new Divider(height: 1.0),
+      Align(
+      alignment: Alignment.centerRight,
+      child: Row(
+      children: <Widget> [Image.asset('assets/images/gh_add_icon.png', scale: 3),
+      FlatButton(child: Text("Add New Room",
+      style: Style.TextTemplate.event_title), onPressed: toGameStore )]
+      ,mainAxisAlignment: MainAxisAlignment.center
+    )
+
+  )
+    ]
+  );
+}
+
   // TODO: rename these so they make sense? These aren't rooms anymore they are games
   Widget _buildGameRoomsList() {
     // TODO: update this to work through a service
     return new StreamBuilder(
         stream: Firestore.instance
-            .collection('rooms')
-            .orderBy('name', descending: false)
+            .collection('rooms').where('users', arrayContains: widget.currentUser.id)
+            //.orderBy('name', descending: false)
             .limit(30)
             .snapshots(),
         builder: (context, snapshot) {
@@ -208,9 +248,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       child: InkWell(
         splashColor: Colors.grey,
         onTap: () {
-          print('Card tapped.');
+      //    print(roomData['video_url']);
+          // Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //         builder: (context) => VideoApp(
+          //               video_url: roomData['video_url']
+          //             )));
+
           //load relevant event and message
           setState(() {
+
             selectedRoomId = doc_id;
             selectedRoomName = roomData['name'];
           });
@@ -272,18 +320,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return Firestore.instance
         .collection("events")
         //.orderBy("dateTime", descending: false)
-        .where("game", isEqualTo: selectedRoomName)
+        .where("id", isEqualTo: selectedRoomId)
         .limit(60)
         .snapshots();
   }
-void updatedatabase() async{
-  var query = await Firestore.instance.collectionGroup("events").getDocuments();
-  for (var document in query.documents){
-    await document.reference.updateData({'title': 'New Title2'});
-  }
-
-
-}
 
   Widget _buildEventBox(dynamic eventData) {
     String name = "";
@@ -508,7 +548,7 @@ void updatedatabase() async{
       await Firestore.instance
           .collection("users")
           .document(widget.currentUser.id)
-          .collection("attending_events")
+          .collection("events")
           .document(eventData.documentID)
           .setData(data)
           .then((value) {
@@ -827,7 +867,6 @@ void updatedatabase() async{
     Firestore.instance.runTransaction((transaction) async {
       await transaction.set(documentRef, {
         'fromId': widget.currentUser.id,
-        'fromPhotoUrl': widget.currentUser.photoUrl,
         'fromNickname': widget.currentUser.nickname,
         'timestamp': DateTime.now().millisecondsSinceEpoch.toString(),
         'content': text,
@@ -840,7 +879,6 @@ void updatedatabase() async{
     GChatMessage gmessage = new GChatMessage(
       text: message['content'],
       nickname: message['fromNickname'],
-      photoUrl: message['fromPhotoUrl'],
       aController: new AnimationController(
           duration: new Duration(milliseconds: 600), vsync: this),
     );
@@ -998,7 +1036,7 @@ void updatedatabase() async{
                     child: PageView(
                       onPageChanged: pageChanged,
                       children: <Widget>[
-                        _buildGameRoomsList(),
+                        buildRoomsList(),
                         _buildGameNearbyList()
                       ],
                     ),
@@ -1057,43 +1095,31 @@ void updatedatabase() async{
     });
   }
 
-Widget AddEventIcon(){
-  bool _isIos = (Theme.of(context).platform == TargetPlatform.iOS);
-  if (_isIos==true){
-//  return Transform.scale(
-  //  scale: 4,
-    return IconButton(
-      onPressed: () {
-        setState(() {
-          _navigateToCreateEventPage();
-        });
-      },
-      icon:
-      Transform.scale(scale: 4,
-      child: Image.asset('assets/images/gh_add_icon.png')
-    )
-    );
-  //);
-  }
-return IconButton(
-  onPressed: () {
-    setState(() {
-      _navigateToCreateEventPage();
-    });
-  },
-  icon: Image.asset('assets/images/gh_add_icon.png')
-);
-}
+  Widget AddEventIcon(){
+    bool _isIos = (Theme.of(context).platform == TargetPlatform.iOS);
+    if (_isIos==true){
+  //  return Transform.scale(
+    //  scale: 4,
+      return IconButton(
+        onPressed: () {
+          setState(() {
+            _navigateToCreateEventPage();
+          });
+        },
+        icon: Image.asset('assets/images/gh_add_icon.png')
 
-NetworkImage GetImage(){
-  print(widget.currentUser.photoUrl);
-  if (widget.currentUser.photoUrl==null || widget.currentUser.photoUrl==''){
-     return NetworkImage('https://robohash.org/'+(_userNickname ?? ""));
-  }else{
-    return NetworkImage(widget.currentUser.photoUrl);
+      );
+    //);
+    }
+  return IconButton(
+    onPressed: () {
+      setState(() {
+        _navigateToCreateEventPage();
+      });
+    },
+    icon: Image.asset('assets/images/gh_add_icon.png')
+  );
   }
-}
-
   Widget _drawerHeaderTab() {
 
     return Column(
@@ -1124,7 +1150,7 @@ NetworkImage GetImage(){
                   width: 45,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                        image: GetImage(),
+                        image: NetworkImage('https://robohash.org/'+(_userNickname ?? "")),
                         fit: BoxFit.fitHeight
                     ),
                     borderRadius: new BorderRadius.all(new Radius.circular(100.0)),

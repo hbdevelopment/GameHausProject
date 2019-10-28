@@ -314,11 +314,10 @@ import 'package:ghfrontend/services/authentication.dart';
 // }
 
 class GChatMessage extends StatelessWidget {
-  GChatMessage({this.text, this.aController, this.nickname, this.photoUrl});
+  GChatMessage({this.text, this.aController, this.nickname});
 
   final String text;
   final String nickname;
-  final String photoUrl;
   final AnimationController aController;
 
   Widget _wrapWithEaseOutAnimation(Widget toWrap) {
@@ -328,15 +327,6 @@ class GChatMessage extends StatelessWidget {
       axisAlignment: 0.0,
       child: toWrap,
     );
-  }
-
-  NetworkImage GetImage(){
-
-    if (photoUrl==null || photoUrl==''){
-       return NetworkImage('https://robohash.org/'+(nickname ?? ""));
-    }else{
-      return NetworkImage(photoUrl);
-    }
   }
 
   @override
@@ -349,7 +339,7 @@ class GChatMessage extends StatelessWidget {
           new Container(
               margin: const EdgeInsets.only(right: 12.0),
               child: new CircleAvatar(
-                backgroundImage: GetImage(),
+                backgroundImage: NetworkImage('https://robohash.org/'+(nickname ?? "")),
                 //child: new Text(nickname[0],style: Style.TextTemplate.button_signup,)
               )
               ),

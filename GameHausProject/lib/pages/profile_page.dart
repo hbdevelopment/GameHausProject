@@ -2,14 +2,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/generated/i18n.dart';
+//import 'package:fluttertoast/generated/i18n.dart';
 import 'package:ghfrontend/models/guser.dart';
 import 'package:ghfrontend/services/authentication.dart';
 import 'package:ghfrontend/services/date_helper.dart';
 import 'package:ghfrontend/services/users.dart';
 import 'package:ghfrontend/style/theme_style.dart' as Style;
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:ghfrontend/pages/attendance_page.dart';
 
 
 class ProfilePage extends StatefulWidget {
@@ -114,28 +114,12 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  SelectImage() async{
-    var galleryfile=await ImagePicker.pickImage(source: ImageSource.gallery);
-  }
-
-NetworkImage GetImage(){
-  print(mUser.photoUrl);
-  if (mUser.photoUrl==null || mUser.photoUrl==""){
-    return NetworkImage('https://robohash.org/'+(mUser.nickname ?? ""));
-  }else{
-    return NetworkImage(mUser.photoUrl);
-  }
-}
-
   Widget _createProfilePicture(){
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         Center(
-          child:
-          GestureDetector(
-          onLongPress: SelectImage,
           child: Container(
             height: 170,
             width: 170,
@@ -143,7 +127,7 @@ NetworkImage GetImage(){
             margin: EdgeInsets.only(top: 25,bottom: 15),
             decoration: BoxDecoration(
               image: DecorationImage(
-                  image: GetImage(),
+                  image: NetworkImage('https://robohash.org/'+(mUser.nickname ?? "")),
                   fit: BoxFit.cover
               ),
               borderRadius: new BorderRadius.all(new Radius.circular(100.0)),
@@ -153,8 +137,7 @@ NetworkImage GetImage(){
               ),
 
             ),
-          )
-        ),
+          ),
         ),
 
         Text(mUser.nickname, style: Style.TextTemplate.profile_name, textAlign: TextAlign.center,),
@@ -165,8 +148,6 @@ NetworkImage GetImage(){
       ],
     );
   }
-
-
 
   void _getUserDetails() async{
 
@@ -231,6 +212,19 @@ NetworkImage GetImage(){
     }
   }
 
+  void _eventCardTapped(eventData) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => AttendancePage(
+                        eventData: eventData,
+                        currentUser: widget.currentUser,
+                        boolAttend: false,
+                      )));
+        }
+
+
+
   Widget _buildEventView(eventData){
 
     Widget eventImage;
@@ -241,11 +235,14 @@ NetworkImage GetImage(){
     }else{
       eventImage = Image(
         image: NetworkImage(eventData["image_url"]),
-        fit: BoxFit.fitHeight,
+        fit: BoxFit.fitWidth,
       );
     }
 
-    return Container(
+    return
+    InkWell(
+      onTap: () {_eventCardTapped(eventData);},
+    child: Container(
       width: 200,
       padding: EdgeInsets.only(bottom: 10),
       margin: EdgeInsets.only(right: 10),
@@ -264,8 +261,9 @@ NetworkImage GetImage(){
             child: eventImage
           ),
           Container(
+
             padding: EdgeInsets.only(left:10, top: 12,right: 10),
-            child: Text(eventData["title"] ?? "", style: Style.TextTemplate.event_title,),
+            child: Text(eventData["title"] ?? "", style: Style.TextTemplate.event_title, overflow: TextOverflow.ellipsis),
           ),
           Padding(
             padding: EdgeInsets.only(left: 8, top: 5),
@@ -301,7 +299,8 @@ NetworkImage GetImage(){
           )
         ],
       ),
-    );
+    )
+  );
   }
 
   _signOut() async {

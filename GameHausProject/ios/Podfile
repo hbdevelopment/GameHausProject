@@ -11,19 +11,19 @@ project 'Runner', {
 
   }
 
-pod 'Firebase/Core', '~> 6.3.0'
+pod 'Firebase/Core'
 
-  pod 'Firebase/Auth', '~> 6.3.0'
-  pod 'Firebase/Database', '~> 6.3.0'
-  pod 'Firebase/Functions', '~> 6.3.0'
-  pod 'Firebase/DynamicLinks', '~> 6.3.0'
-  pod 'Firebase/Firestore', '~> 6.3.0'
-  pod 'Firebase/Messaging', '~> 6.3.0'
-  pod 'Firebase/RemoteConfig', '~> 6.3.0'
-  pod 'Firebase/Storage', '~> 6.3.0'
-  pod 'Firebase/Performance', '~> 6.3.0'
-  pod 'Fabric', '~> 1.10.2'
-  pod 'Crashlytics', '~> 3.13.2'
+  pod 'Firebase/Auth'
+  pod 'Firebase/Database'
+  pod 'Firebase/Functions'
+  pod 'Firebase/DynamicLinks'
+  pod 'Firebase/Firestore'
+  pod 'Firebase/Messaging'
+  pod 'Firebase/RemoteConfig'
+  pod 'Firebase/Storage'
+  pod 'Firebase/Performance'
+  pod 'Fabric'
+  pod 'Crashlytics'
 
 
 def parse_KV_file(file, separator='=')
