@@ -10,7 +10,6 @@ import 'package:ghfrontend/models/guser.dart';
 import 'package:ghfrontend/services/users.dart';
 import 'package:ghfrontend/style/theme_style.dart' as Style;
 import 'videoApp.dart';
-import 'chat_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:async';
