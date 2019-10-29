@@ -7,8 +7,11 @@ class GUser {
   String createdAt;
   String displayName;
   List memberOfEvents;
+  Map<dynamic, dynamic> listOfJson;
+  Map<dynamic, dynamic> listOfAPI;
 
-  GUser(this.id, this.nickname, this.photoUrl, this.createdAt, this.displayName, this.memberOfEvents);
+
+  GUser(this.id, this.nickname, this.photoUrl, this.createdAt, this.displayName, this.memberOfEvents, this.listOfJson, this.listOfAPI);
 
   GUser.fromSnapshot(DocumentSnapshot snapshot) :
     id = snapshot["id"],
@@ -16,7 +19,9 @@ class GUser {
     photoUrl = snapshot["photoUrl"],
     createdAt = snapshot["createdAt"],
     displayName = snapshot["displayName"],
-    memberOfEvents = snapshot['memberOfEvents'];
+    memberOfEvents = snapshot['memberOfEvents'],
+    listOfJson = snapshot['Game JSON'],
+    listOfAPI=snapshot['Game API'];
 
   bool incompletePreferences() {
     return nickname == null;
@@ -29,7 +34,9 @@ class GUser {
       "photoUrl": photoUrl,
       "createdAt": createdAt,
       "displayName": displayName,
-      "memberOfEvents": memberOfEvents
+      "memberOfEvents": memberOfEvents,
+      "listOfJson": listOfJson,
+      "listOfAPI": listOfAPI
     };
   }
 }

@@ -1,7 +1,9 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:ghfrontend/services/API_call.dart';
 //import 'package:fluttertoast/generated/i18n.dart';
 import 'package:ghfrontend/models/guser.dart';
 import 'package:ghfrontend/services/authentication.dart';
@@ -32,7 +34,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   BaseAuth auth;
   Users users;
-  GUser mUser = GUser("","","","","",[""]);
+  GUser mUser = GUser("","","","","",[""], {"":""}, {"":""});
   VoidCallback onSignedOut;
 
   @override
@@ -40,7 +42,9 @@ class _ProfilePageState extends State<ProfilePage> {
     // TODO: implement initState
     _getUserDetails();
     super.initState();
+
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -153,9 +157,11 @@ class _ProfilePageState extends State<ProfilePage> {
 
     if (widget.isMe){
       try {
+
         var user = await FirebaseAuth.instance.currentUser();
         Firestore.instance.collection("users").document(user.uid).get().then((snapshot){
           GUser userData = GUser.fromSnapshot(snapshot);
+
           setState(() {
             mUser = userData;
           });
@@ -166,6 +172,7 @@ class _ProfilePageState extends State<ProfilePage> {
     }else{
       try {
         Firestore.instance.collection("users").document(widget.userId).get().then((snapshot){
+
           GUser userData = GUser.fromSnapshot(snapshot);
           setState(() {
             mUser = userData;
@@ -175,6 +182,10 @@ class _ProfilePageState extends State<ProfilePage> {
         print(e);
       }
     }
+
+
+
+  //  }
 
 
   }
@@ -303,6 +314,13 @@ class _ProfilePageState extends State<ProfilePage> {
   );
   }
 
+  testFunction() async{
+    if (mUser.listOfAPI!=null){
+      print(mUser.listOfAPI);
+    }
+    await APICall().AddPlayerAPIInfo(widget.currentUser.id, 'pc', 'us', 'cats-11481');
+    setState((){});
+  }
   _signOut() async {
     GoogleSignIn googleSignIn = new GoogleSignIn();
     try {

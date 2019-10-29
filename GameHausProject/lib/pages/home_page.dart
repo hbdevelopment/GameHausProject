@@ -67,7 +67,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     _configureLocalNotifications();
 
     _userNickname = widget.currentUser.nickname;
-
+    if (widget.currentUser.listOfAPI!=null){
+    var returnval=jsonDecode(widget.currentUser.listOfAPI["Overwatch"]);
+    print("CURRENT USER NAME:"+returnval['userID']);
+  }
     drawerTitle = "ROOMS";
     currentIndexPage = 0;
   }

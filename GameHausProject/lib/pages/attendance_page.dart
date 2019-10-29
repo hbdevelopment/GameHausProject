@@ -27,7 +27,7 @@ class _AttendancePageState extends State<AttendancePage> {
 
   BaseAuth auth;
   Users users;
-  GUser mUser = GUser("","","","","",[""]);
+  GUser mUser = GUser("","","","","",[""],{"":""}, {"":""});
   VoidCallback onSignedOut;
 
   @override
