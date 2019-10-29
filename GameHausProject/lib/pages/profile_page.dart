@@ -53,7 +53,7 @@ class _ProfilePageState extends State<ProfilePage> {
     if (widget.isMe){
       logOutButton = FlatButton(
         child: Text("LOG OUT" ,style: Style.TextTemplate.app_bar_button,),
-        onPressed: ()=>addJsonInfo("pc", "us", "cats-11481"),
+        onPressed: _signOut,
       );
     }else{
       logOutButton = Center();
