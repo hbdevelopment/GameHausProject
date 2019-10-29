@@ -53,7 +53,7 @@ class _ProfilePageState extends State<ProfilePage> {
     if (widget.isMe){
       logOutButton = FlatButton(
         child: Text("LOG OUT" ,style: Style.TextTemplate.app_bar_button,),
-        onPressed: _signOut,
+        onPressed: ()=>addJsonInfo("pc", "us", "cats-11481"),
       );
     }else{
       logOutButton = Center();
@@ -314,13 +314,30 @@ class _ProfilePageState extends State<ProfilePage> {
   );
   }
 
-  testFunction() async{
-    if (mUser.listOfAPI!=null){
-      print(mUser.listOfAPI);
-    }
-    await APICall().AddPlayerAPIInfo(widget.currentUser.id, 'pc', 'us', 'cats-11481');
-    setState((){});
+  addAPIInfo(String platform, String region, String battleNetID) async{
+    await APICall(currentUser: widget.currentUser).AddPlayerAPIInfo(widget.currentUser.id, platform, region, battleNetID);
+    _getUserDetails();
+    print(widget.currentUser.listOfAPI['Overwatch']);
+    //setState((){});
+
   }
+
+  addJsonInfo(String platform, String region, String battleNetID) async{
+
+    await APICall(currentUser: widget.currentUser).callOverwatchAPI(widget.currentUser.id, platform, region, battleNetID);
+    _getUserDetails();
+    print(widget.currentUser.listOfJson['Overwatch']);
+  }
+
+  updatePlayerOverwatchInfo() async{
+    if (widget.currentUser.listOfAPI["Overwatch"]==null){
+      return;
+    }
+    Map<String, dynamic> data=jsonDecode(widget.currentUser.listOfAPI['Overwatch']);
+    addJsonInfo(data['platform'], data['region'], data['battleNetID']);
+    _getUserDetails();
+  }
+
   _signOut() async {
     GoogleSignIn googleSignIn = new GoogleSignIn();
     try {
