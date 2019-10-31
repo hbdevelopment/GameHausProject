@@ -23,7 +23,7 @@ class _GamerStatsState extends State<GamerStats> {
 
     // initialize the holder, initially, they all empty 0 size SizedBox
     for(int i = 0; i < 4; i++){
-      _gameStatsHolder[i] = _gameStatsHolder[0] = SizedBox(
+      _gameStatsHolder[i]  = SizedBox(
         width: 0,
         height: 0,
       );
