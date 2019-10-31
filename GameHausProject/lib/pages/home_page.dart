@@ -165,6 +165,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 onSignedOut: widget.onSignedOut,
                 users: widget.users,
                 currentUser: widget.currentUser,
+                userId: widget.currentUser.id,
                 isMe: true)));
   }
 

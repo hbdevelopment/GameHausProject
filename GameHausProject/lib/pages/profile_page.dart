@@ -12,7 +12,7 @@ import 'package:ghfrontend/services/users.dart';
 import 'package:ghfrontend/style/theme_style.dart' as Style;
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:ghfrontend/pages/attendance_page.dart';
-
+//import 'GamerStats2.dart';
 
 class ProfilePage extends StatefulWidget {
 
@@ -53,7 +53,7 @@ class _ProfilePageState extends State<ProfilePage> {
     if (widget.isMe){
       logOutButton = FlatButton(
         child: Text("LOG OUT" ,style: Style.TextTemplate.app_bar_button,),
-        onPressed: _signOut,
+        onPressed:  _signOut,
       );
     }else{
       logOutButton = Center();
@@ -77,11 +77,17 @@ class _ProfilePageState extends State<ProfilePage> {
         children: <Widget>[
           _createColorsRow(),
           _createProfilePicture(),
+          // Container(
+          //   height: 300,
+          //   padding: EdgeInsets.only(left: 17,right: 17),
+          //   child: new GamerStats(currentUser: mUser, userId: widget.userId)
+          //
+          // ),
           Container(
             height: 300,
             padding: EdgeInsets.only(left: 17,right: 17),
             child: _createAttendingEvents(),
-          )
+          ),
         ],
       ),
     );
@@ -145,6 +151,7 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
 
         Text(mUser.nickname, style: Style.TextTemplate.profile_name, textAlign: TextAlign.center,),
+        //jsonDecode(mUser.listOfJson['Overwatch'] ?? '{"":""}')['name'] ?? ""
         Padding(
           padding: EdgeInsets.only(left: 17, top: 25, bottom: 10),
           child: Text("ATTENDING THESE EVENTS", style: Style.TextTemplate.heading, textAlign: TextAlign.start,),
@@ -315,18 +322,20 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   addAPIInfo(String platform, String region, String battleNetID) async{
-    await APICall(currentUser: widget.currentUser).AddPlayerAPIInfo(widget.currentUser.id, platform, region, battleNetID);
+    var returnedval=await APICall(currentUser: widget.currentUser).AddPlayerAPIInfo(widget.currentUser.id, platform, region, battleNetID);
     _getUserDetails();
-    print(widget.currentUser.listOfAPI['Overwatch']);
+
+    print("Data: "+returnedval.toString());
     //setState((){});
 
   }
 
   addJsonInfo(String platform, String region, String battleNetID) async{
 
-    await APICall(currentUser: widget.currentUser).callOverwatchAPI(widget.currentUser.id, platform, region, battleNetID);
+    var result=await APICall(currentUser: widget.currentUser).callOverwatchAPI(widget.currentUser.id, platform, region, battleNetID);
     _getUserDetails();
-    print(widget.currentUser.listOfJson['Overwatch']);
+    bool isnull=(result==null);
+    print("Data2: "+isnull.toString());
   }
 
   updatePlayerOverwatchInfo() async{
