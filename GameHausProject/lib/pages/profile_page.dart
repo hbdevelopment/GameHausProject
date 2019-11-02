@@ -77,6 +77,9 @@ class _ProfilePageState extends State<ProfilePage> {
         children: <Widget>[
           _createColorsRow(),
           _createProfilePicture(),
+          _createOverwatchGameStats(),
+          _createRefresh (),
+
           // Container(
           //   height: 300,
           //   padding: EdgeInsets.only(left: 17,right: 17),
@@ -158,6 +161,328 @@ class _ProfilePageState extends State<ProfilePage> {
         )
       ],
     );
+  }
+
+  /*
+   * this method is to create the refresh button
+   */
+  Widget _createRefresh () {
+    return FlatButton(
+        child: Text("Refresh", style: Style.TextTemplate.drawer_listTitle),
+        onPressed: updatePlayerOverwatchInfo
+    );
+  }
+
+
+  /*
+   * this method is to create Overwatch Stats block
+   */
+  Widget _createOverwatchGameStats(){
+
+    addAPIInfo('pc', 'us', 'TheKid-4485');
+    addJsonInfo('pc', 'us', 'TheKid-4485');
+
+    if(mUser.listOfJson==null || mUser.listOfJson['Overwatch']==null){
+
+      return SizedBox(
+        width: 0,
+        height: 0,
+      );
+    }else{
+
+      print("Greetings");
+
+      // store all info from Json into a Map
+      Map<String, dynamic> allInfo = jsonDecode(mUser.listOfJson['Overwatch']);
+
+      return Stack(
+        children: <Widget>[
+          Opacity(
+            opacity: 0.65,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20.0),
+                color: Colors.amber,
+              ),
+              width: MediaQuery.of(context).size.width,
+              height: 300,
+            ),
+          ),
+
+          // all info in the OverwatchStats block
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              SizedBox(
+                height: 10,
+              ),
+
+              // Overwatch logo
+              Image.asset('assets/images/overwatch_icon.png',
+                  width: 30,
+                  height: 30
+              ),
+
+              // all stats
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget> [
+
+                  // User info
+                  Padding(
+                    padding: EdgeInsets.only(left: 10, right: 10),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                          alignment: AlignmentDirectional.center,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20.0),
+                            color: Colors.black38,
+                          ),
+                          width: 120,
+                          height: 25,
+                          child: Text('User Info',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontFamily: "Bahnschrift",
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        Stack(
+                          alignment: AlignmentDirectional.center,
+                          children: <Widget>[
+                            Image.network(allInfo['icon'],
+                              width: 45,
+                              height: 45,
+                            ),
+                            Image.network(allInfo['levelIcon'],
+                              width: 90,
+                              height: 90,
+                            ),
+                            Image.network(allInfo['prestigeIcon'],
+                              width: 90,
+                              height: 90,
+                            ),
+                          ],
+                        ),
+                        Text(allInfo['name'],
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontFamily: "Bahnschrift",
+                            color: Colors.white,
+                          ),
+                        ),
+
+                        Text('LV: ' + allInfo['prestige'].toString() + allInfo['level'].toString(),
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontFamily: "Bahnschrift",
+                            color: Colors.white,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text('Total Wins: ' + allInfo['gamesWon'].toString(),
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontFamily: "Bahnschrift",
+                            color: Colors.white,
+                          ),
+                        ),
+
+                      ],
+                    ),
+                  ),
+
+                  // Separator line
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20.0),
+                      color: Colors.white70,
+                    ),
+                    width: 5,
+                    height: 240,
+                  ),
+
+
+                  // Competitive stats
+                  Padding(
+                    padding: EdgeInsets.only(right: 10, left: 10),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                          alignment: AlignmentDirectional.center,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20.0),
+                            color: Colors.black38,
+                          ),
+                          width: 120,
+                          height: 25,
+                          child: Text('Competitive',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontFamily: "Bahnschrift",
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text('Winrate: ' + (allInfo['competitiveStats']['games']['won']*100/allInfo['competitiveStats']['games']['played']).roundToDouble().toString(),
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontFamily: "Bahnschrift",
+                            color: Colors.white,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text('Gold Medals: ' + allInfo['competitiveStats']['awards']['medalsGold'].toString(),
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontFamily: "Bahnschrift",
+                            color: Colors.orange,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text('Silver Medals: ' + allInfo['competitiveStats']['awards']['medalsSilver'].toString(),
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontFamily: "Bahnschrift",
+                            color: Colors.black26,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text('Bronze Medals: ' + allInfo['competitiveStats']['awards']['medalsBronze'].toString(),
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontFamily: "Bahnschrift",
+                            color: Colors.brown,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text('Cards: ' + allInfo['competitiveStats']['awards']['cards'].toString(),
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontFamily: "Bahnschrift",
+                            color: Colors.brown,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // Separator line
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20.0),
+                      color: Colors.white70,
+                    ),
+                    width: 5,
+                    height: 240,
+                  ),
+
+
+                  // Quick Play stats
+                  Padding(
+                    padding: EdgeInsets.only(right: 10, left: 10),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+
+                      children: <Widget>[
+                        Container(
+                          alignment: AlignmentDirectional.center,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20.0),
+                            color: Colors.black38,
+                          ),
+                          width: 120,
+                          height: 25,
+                          child: Text('Quick Play',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontFamily: "Bahnschrift",
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text('Game Wins: ' + allInfo['quickPlayStats']['games']['won'].toString(),
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontFamily: "Bahnschrift",
+                            color: Colors.white,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text('Gold Medals: ' + allInfo['quickPlayStats']['awards']['medalsGold'].toString(),
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontFamily: "Bahnschrift",
+                            color: Colors.orange,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text('Silver Medals: ' + allInfo['quickPlayStats']['awards']['medalsSilver'].toString(),
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontFamily: "Bahnschrift",
+                            color: Colors.black26,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text('Bronze Medals: ' + allInfo['quickPlayStats']['awards']['medalsBronze'].toString(),
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontFamily: "Bahnschrift",
+                            color: Colors.brown,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text('Cards: ' + allInfo['quickPlayStats']['awards']['cards'].toString(),
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontFamily: "Bahnschrift",
+                            color: Colors.brown,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      );
+    }
   }
 
   void _getUserDetails() async{
