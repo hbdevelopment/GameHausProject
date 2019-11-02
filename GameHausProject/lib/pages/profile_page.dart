@@ -41,13 +41,17 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
     // TODO: implement initState
     _getUserDetails();
-    super.initState();
 
+    addAPIInfo('pc', 'us', 'llllllllllll-12784');
+    addJsonInfo('pc', 'us', 'llllllllllll-12784');
+
+    super.initState();
   }
 
 
   @override
   Widget build(BuildContext context) {
+
 
     Widget logOutButton;
     if (widget.isMe){
@@ -169,7 +173,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget _createRefresh () {
     return FlatButton(
         child: Text("Refresh", style: Style.TextTemplate.drawer_listTitle),
-        onPressed: updatePlayerOverwatchInfo
+        onPressed: updatePlayerOverwatchInfo,
     );
   }
 
@@ -178,9 +182,6 @@ class _ProfilePageState extends State<ProfilePage> {
    * this method is to create Overwatch Stats block
    */
   Widget _createOverwatchGameStats(){
-
-    addAPIInfo('pc', 'us', 'TheKid-4485');
-    addJsonInfo('pc', 'us', 'TheKid-4485');
 
     if(mUser.listOfJson==null || mUser.listOfJson['Overwatch']==null){
 
@@ -257,8 +258,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           alignment: AlignmentDirectional.center,
                           children: <Widget>[
                             Image.network(allInfo['icon'],
-                              width: 45,
-                              height: 45,
+                              width: 35,
+                              height: 35,
                             ),
                             Image.network(allInfo['levelIcon'],
                               width: 90,
