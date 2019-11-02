@@ -180,7 +180,7 @@ class _GamerStatsState extends State<GamerStats> {
 
                 // User info
                 Padding(
-                  padding: EdgeInsets.only(right: 10),
+                  padding: EdgeInsets.only(right: 5),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -257,7 +257,7 @@ class _GamerStatsState extends State<GamerStats> {
 
                 // Competitive stats
                 Padding(
-                  padding: EdgeInsets.only(right: 10, left: 10),
+                  padding: EdgeInsets.only(right: 5, left: 5),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -339,7 +339,7 @@ class _GamerStatsState extends State<GamerStats> {
 
                 // Quick Play stats
                 Padding(
-                  padding: EdgeInsets.only(left: 10),
+                  padding: EdgeInsets.only(left: 5),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
