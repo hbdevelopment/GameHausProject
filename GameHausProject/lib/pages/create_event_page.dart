@@ -31,6 +31,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
   final capacityController = TextEditingController();
 
   var radioValue = 0;
+  var groupValue=0;
 
   /// FORM ELECTIONS
   String title = "";
@@ -40,6 +41,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
   String selectedLocation = "";
   int capacity = 0;
   String type = "Casual";
+  String group="LFG";
   String description = "";
 
   String selectedRoomId = "";
@@ -299,7 +301,43 @@ class _CreateEventPageState extends State<CreateEventPage> {
                 ),
               ],
             ),
-          ),
+          ), Container(
+        padding: EdgeInsets.only(top: 3, bottom: 3, left: 18, right: 18),
+                      color: Style.Colors.darkGrey,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Expanded(
+                            child: Text("What Type?", style: Style.TextTemplate.tf_hint),
+                          ),
+                          Container(
+                            width: 2,
+                            height: 20,
+                            color: Colors.white,
+                          ),
+                          new Radio(
+                            value: 0,
+                            groupValue: groupValue,
+                            activeColor: Colors.white,
+                            onChanged: handleGroupTypeChange,
+                          ),
+                          new Text(
+                            'LFG',
+                            style: Style.TextTemplate.tf_hint,
+                          ),
+                          new Radio(
+                            value: 1,
+                            groupValue: groupValue,
+                            onChanged: handleGroupTypeChange,
+                            activeColor: Colors.white,
+                          ),
+                          new Text(
+                            'Tournament',
+                            style: Style.TextTemplate.tf_hint,
+                          ),
+                        ],
+                      ),
+                    ),
           Padding(
             padding: EdgeInsets.only(left: 17, top: 36, bottom: 13),
             child: Text(
@@ -407,9 +445,11 @@ class _CreateEventPageState extends State<CreateEventPage> {
 
       switch (radioValue) {
         case 0:
+        print("Casual");
           type = "Casual";
           break;
         case 1:
+        print("Competitive");
           type = "Competitive";
           break;
         default:
@@ -417,7 +457,25 @@ class _CreateEventPageState extends State<CreateEventPage> {
       }
     });
   }
+  void handleGroupTypeChange(int value){
+    setState(() {
+      groupValue=value;
+    });
+    switch (groupValue) {
+      case 0:
 
+        group = "LFG";
+        print(group);
+        break;
+      case 1:
+
+        group= "Tournament";
+        print(group);
+        break;
+      default:
+        break;
+    }
+  }
   void _showDialog(context, title, description) {
     showDialog(
         context: context,
@@ -565,6 +623,8 @@ BoxDecoration _borderSelection(){
       _showDialog(context, "Opps", "Capacity cannot be empty.");
     }else if (type.isEmpty){
       _showDialog(context, "Opps", "Invalid Event Type");
+    }else if (type.isEmpty){
+      _showDialog(context, "Opps", "Invalid Group Type");
     }else if (description.isEmpty){
       _showDialog(context, "Opps", "Description cannot be empty.");
     }else {
@@ -584,7 +644,7 @@ BoxDecoration _borderSelection(){
               date,
               capacity,
               selectedLocation,
-              type,user.uid,userData.nickname);
+              type, group, user.uid,userData.nickname);
 
           Map<String, dynamic> eventData = event.toJson();
           _createEventInFirestore(eventData);

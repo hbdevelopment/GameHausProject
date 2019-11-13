@@ -42,8 +42,8 @@ class _ProfilePageState extends State<ProfilePage> {
     // TODO: implement initState
     _getUserDetails();
 
-    addAPIInfo('pc', 'us', 'llllllllllll-12784');
-    addJsonInfo('pc', 'us', 'llllllllllll-12784');
+  //  addAPIInfo('pc', 'us', 'llllllllllll-12784');
+  //  addJsonInfo('pc', 'us', 'llllllllllll-12784');
 
     super.initState();
   }
@@ -196,6 +196,61 @@ class _ProfilePageState extends State<ProfilePage> {
       // store all info from Json into a Map
       Map<String, dynamic> allInfo = jsonDecode(mUser.listOfJson['Overwatch']);
 
+      String competitivewinrate="0";
+      String competitiveMedalGold="";
+      String competitiveMedalSilver="";
+      String competitiveMedalBronze="";
+      String competitiveCards="";
+      if (allInfo['competitiveStats']!=null){
+
+        if (allInfo['competitiveStats']['games']!=null){
+        competitivewinrate=(allInfo['competitiveStats']['games']['won']*100/allInfo['competitiveStats']['games']['played']).roundToDouble().toString();
+        }
+        if (allInfo['competitiveStats']['awards']!=null && allInfo['competitiveStats']['awards']['medalsGold']!=null){
+          competitiveMedalGold=allInfo['competitiveStats']['awards']['medalsGold'].toString();
+        }
+        if (allInfo['competitiveStats']['awards']!=null && allInfo['competitiveStats']['awards']['medalsSilver']!=null){
+          competitiveMedalSilver=allInfo['competitiveStats']['awards']['medalsSilver'].toString();
+        }
+        if (allInfo['competitiveStats']['awards']!=null && allInfo['competitiveStats']['awards']['medalsBronze']!=null){
+          competitiveMedalBronze=allInfo['competitiveStats']['awards']['medalsBronze'].toString();
+        }
+        if (allInfo['competitiveStats']['awards']!=null && allInfo['competitiveStats']['awards']['cards']!=null){
+          competitiveCards=allInfo['competitiveStats']['awards']['cards'].toString();
+        }
+
+      }
+
+    String quickPlaywinrate="0";
+    String quickPlayMedalGold="";
+    String quickPlayMedalSilver="";
+    String quickPlayMedalBronze="";
+    String quickPlayCards="";
+
+    if (allInfo['quickPlayStats']!=null){
+      if (allInfo['quickPlayStats']['games']!=null && allInfo['quickPlayStats']['games']['won']!=null){
+        quickPlaywinrate=allInfo['quickPlayStats']['games']['won'].toString();
+      }
+      if (allInfo['quickPlayStats']['awards']!=null){
+        if (allInfo['quickPlayStats']['awards']['medalsGold']!=null){
+          quickPlayMedalGold=allInfo['quickPlayStats']['awards']['medalsGold'].toString();
+        }
+        if (allInfo['quickPlayStats']['awards']['medalsSilver']!=null){
+          quickPlayMedalSilver=allInfo['quickPlayStats']['awards']['medalsSilver'].toString();
+        }
+        if (allInfo['quickPlayStats']['awards']['medalsBronze']!=null){
+          quickPlayMedalBronze=allInfo['quickPlayStats']['awards']['medalsBronze'].toString();
+        }
+        if (allInfo['quickPlayStats']['awards']['cards']!=null){
+          quickPlayCards=allInfo['quickPlayStats']['awards']['cards'].toString();
+        }
+      }
+
+    }
+
+
+
+      //(allInfo['competitiveStats']['games']['won']*100/allInfo['competitiveStats']['games']['played']).roundToDouble().toString()
       return Stack(
         children: <Widget>[
           Opacity(
@@ -338,7 +393,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         SizedBox(
                           height: 10,
                         ),
-                        Text('Winrate: ' + (allInfo['competitiveStats']['games']['won']*100/allInfo['competitiveStats']['games']['played']).roundToDouble().toString(),
+                        Text('Winrate: ' + competitivewinrate,
                           style: TextStyle(
                             fontSize: 15,
                             fontFamily: "Bahnschrift",
@@ -348,7 +403,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         SizedBox(
                           height: 20,
                         ),
-                        Text('Gold Medals: ' + allInfo['competitiveStats']['awards']['medalsGold'].toString(),
+                        Text('Gold Medals: ' + competitiveMedalGold,
                           style: TextStyle(
                             fontSize: 13,
                             fontFamily: "Bahnschrift",
@@ -358,7 +413,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         SizedBox(
                           height: 10,
                         ),
-                        Text('Silver Medals: ' + allInfo['competitiveStats']['awards']['medalsSilver'].toString(),
+                        Text('Silver Medals: ' + competitiveMedalSilver,
                           style: TextStyle(
                             fontSize: 13,
                             fontFamily: "Bahnschrift",
@@ -368,7 +423,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         SizedBox(
                           height: 10,
                         ),
-                        Text('Bronze Medals: ' + allInfo['competitiveStats']['awards']['medalsBronze'].toString(),
+                        Text('Bronze Medals: ' + competitiveMedalBronze,
                           style: TextStyle(
                             fontSize: 13,
                             fontFamily: "Bahnschrift",
@@ -378,7 +433,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         SizedBox(
                           height: 20,
                         ),
-                        Text('Cards: ' + allInfo['competitiveStats']['awards']['cards'].toString(),
+                        Text('Cards: ' + competitiveCards,
                           style: TextStyle(
                             fontSize: 15,
                             fontFamily: "Bahnschrift",
@@ -427,7 +482,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         SizedBox(
                           height: 10,
                         ),
-                        Text('Game Wins: ' + allInfo['quickPlayStats']['games']['won'].toString(),
+                        Text('Game Wins: ' + quickPlaywinrate,
                           style: TextStyle(
                             fontSize: 15,
                             fontFamily: "Bahnschrift",
@@ -437,7 +492,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         SizedBox(
                           height: 20,
                         ),
-                        Text('Gold Medals: ' + allInfo['quickPlayStats']['awards']['medalsGold'].toString(),
+                        Text('Gold Medals: ' + quickPlayMedalGold,
                           style: TextStyle(
                             fontSize: 13,
                             fontFamily: "Bahnschrift",
@@ -447,7 +502,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         SizedBox(
                           height: 10,
                         ),
-                        Text('Silver Medals: ' + allInfo['quickPlayStats']['awards']['medalsSilver'].toString(),
+                        Text('Silver Medals: ' + quickPlayMedalSilver,
                           style: TextStyle(
                             fontSize: 13,
                             fontFamily: "Bahnschrift",
@@ -457,7 +512,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         SizedBox(
                           height: 10,
                         ),
-                        Text('Bronze Medals: ' + allInfo['quickPlayStats']['awards']['medalsBronze'].toString(),
+                        Text('Bronze Medals: ' + quickPlayMedalBronze,
                           style: TextStyle(
                             fontSize: 13,
                             fontFamily: "Bahnschrift",
@@ -467,7 +522,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         SizedBox(
                           height: 20,
                         ),
-                        Text('Cards: ' + allInfo['quickPlayStats']['awards']['cards'].toString(),
+                        Text('Cards: ' + quickPlayCards,
                           style: TextStyle(
                             fontSize: 15,
                             fontFamily: "Bahnschrift",
@@ -526,7 +581,8 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget _createAttendingEvents(){
     if (mUser.id.isNotEmpty){
       return new StreamBuilder(
-          stream: Firestore.instance.collection("users").document(mUser.id).collection("attending_events").snapshots(),
+          //stream: Firestore.instance.collection("users").document(mUser.id).collection("attending_events").snapshots(),
+          stream: Firestore.instance.collection("events").where('attending_uid', arrayContains: mUser.id).snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return Center(

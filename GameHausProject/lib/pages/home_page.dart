@@ -340,6 +340,7 @@ Widget buildRoomsList(){
     String roboUrl = "https://robohash.org/" + name;
     String created_uid = eventData["user_id"];
 
+
     Image eventImage;
     if (eventData["image_url"] == null) {
       eventImage = Image(
@@ -406,6 +407,18 @@ Widget buildRoomsList(){
                             ],
                           ),
                         )),
+                      Padding(
+                        padding: EdgeInsets.only(left: 15, bottom: 10),
+                        child:Container(height: 25,width: 100, margin: EdgeInsets.only(top: 0, bottom: 10, left: 10, right: 10)
+                        ,decoration: new BoxDecoration(
+                          borderRadius: new BorderRadius.circular(30),
+                                                border: Border.all(color: Colors.white,width: 2.0),
+                                              ),
+
+                                                child: Text(eventData['group_type'] ?? "LFG", style: Style.TextTemplate.tf_hint, textAlign: TextAlign.center),
+
+                                            )
+                      )  ,
                     Padding(
                       padding: EdgeInsets.only(left: 21, bottom: 10),
                       child: Container(
@@ -506,7 +519,7 @@ Widget buildRoomsList(){
         .collection("events")
         .document(eventData.documentID)
         .collection("attendance_uid")
-        .where("user_id", isEqualTo: user.id)
+        .where("id", isEqualTo: user.id)
         .getDocuments();
 
     return querySnap.documents;
@@ -553,11 +566,12 @@ Widget buildRoomsList(){
           .document(eventData.documentID)
           .collection("attendance_uid")
           .document(widget.currentUser.id)
-          .setData({"user_id": widget.currentUser.id});
+          .setData(widget.currentUser.toJson());
+      await Firestore.instance.collection("events").document(eventData.documentID).updateData({"attending_uid": FieldValue.arrayUnion([widget.currentUser.id])});
       await Firestore.instance
           .collection("users")
           .document(widget.currentUser.id)
-          .collection("events")
+          .collection("attending_events")
           .document(eventData.documentID)
           .setData(data)
           .then((value) {
@@ -571,6 +585,7 @@ Widget buildRoomsList(){
           .collection("attendance_uid")
           .document(widget.currentUser.id)
           .delete();
+      await Firestore.instance.collection("events").document(eventData.documentID).updateData({"attending_uid": FieldValue.arrayRemove([widget.currentUser.id])});
       await Firestore.instance
           .collection("users")
           .document(widget.currentUser.id)
@@ -581,6 +596,7 @@ Widget buildRoomsList(){
         _showDialog(context, "Success", "Successfully unattend event");
       });
     }
+    setState((){});
   }
 
   void _showDialog(context, title, description) {

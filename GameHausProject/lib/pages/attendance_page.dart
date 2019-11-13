@@ -7,6 +7,7 @@ import 'package:ghfrontend/models/guser.dart';
 import 'package:ghfrontend/services/authentication.dart';
 import 'package:ghfrontend/services/date_helper.dart';
 import 'package:ghfrontend/services/users.dart';
+import 'profile_page.dart';
 import 'package:ghfrontend/style/theme_style.dart' as Style;
 
 
@@ -56,7 +57,13 @@ class _AttendancePageState extends State<AttendancePage> {
           _createColorsRow(),
           _returnTitle(),
           _returnDetailView(),
-          _returnButtons()
+          _returnButtons(),
+          Text("Attendance", style: Style.TextTemplate.button_signin),
+          Container(
+            height: 300,
+            padding: EdgeInsets.only(left: 17,right: 17),
+            child: _createAttendingEvents(),
+          )
         ],
       ),
     );
@@ -191,26 +198,150 @@ class _AttendancePageState extends State<AttendancePage> {
     );
   }
 
+  Widget _createAttendingEvents(){
+  //  if (mUser.id.isNotEmpty){
+      return new StreamBuilder(
+          stream: Firestore.instance.collection("events").document(widget.eventData.documentID).collection("attendance_uid").snapshots(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                      Theme.of(context).primaryColor),
+                ),
+              );
+            } else {
+              if (snapshot.data.documents.length == 0){
+                return Center(
+                  child: Text("No Attendee", style: Style.TextTemplate.tf_hint,),
+                );
+              }else{
+                return ListView.builder(
+                  shrinkWrap: true,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (_, int index) =>
+                      _buildEventView(snapshot.data.documents[index]),
+                  itemCount: snapshot.data.documents.length,
+                );
+              }
+            }
+          });
+  //  }else{
+  //    return null;
+  //  }
+  }
+
+  void _eventCardTapped(eventData) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ProfilePage(onSignedOut: null, users: new Users(), currentUser: widget.currentUser, isMe: false, userId:eventData["id"])));
+        }
+
+
+
+  Widget _buildEventView(eventData){
+
+    Widget eventImage;
+    if (eventData["nickname"] == null){
+      eventImage = Center(
+        child: Text("No Image", style: Style.TextTemplate.heading,),
+      );
+    }else{
+      eventImage = Image(
+        image: NetworkImage('https://robohash.org/'+(eventData['nickname'] ?? "")),
+        fit: BoxFit.fitWidth,
+      );
+    }
+
+    return
+    InkWell(
+      onTap: () {_eventCardTapped(eventData);},
+    child: Container(
+      width: 200,
+      padding: EdgeInsets.only(bottom: 10),
+      margin: EdgeInsets.only(right: 10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5),
+        color: Style.Colors.darkGrey
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            width: 200,
+            height: 150,
+            color: Style.Colors.grey,
+            child: eventImage
+          ),
+          Container(
+
+            padding: EdgeInsets.only(left:10, top: 12,right: 10),
+            child: Text(eventData["nickname"] ?? "", style: Style.TextTemplate.event_title, overflow: TextOverflow.ellipsis),
+          ),
+          // Padding(
+          //   padding: EdgeInsets.only(left: 8, top: 5),
+          //   child: Row(
+          //     children: <Widget>[
+          //       Icon(Icons.access_time, color: Style.Colors.lightGrey,),
+          //       Flexible(
+          //         child: Padding(
+          //           padding: EdgeInsets.only(left: 5, right: 5),
+          //           child: RichText(
+          //               text: new TextSpan(
+          //                   children: [
+          //                     TextSpan(text: DateHelper().dayFormat(eventData['dateTime'].toDate()), style: Style.TextTemplate.attend_description,),
+          //                     TextSpan(text: DateHelper().dateFormat(eventData['dateTime'].toDate()), style: Style.TextTemplate.attend_description,)
+          //                   ]
+          //               )
+          //           ),
+          //         ),
+          //       )
+          //     ],
+          //   ),
+          // ),
+          // Padding(
+          //   padding: EdgeInsets.only(left: 8, top: 5),
+          //   child: Row(
+          //     children: <Widget>[
+          //       Icon(Icons.location_on, color: Style.Colors.lightGrey,),
+          //       Flexible(
+          //         child: Text(eventData["location"], style: Style.TextTemplate.attend_description),
+          //       )
+          //     ],
+          //   ),
+          // )
+        ],
+      ),
+    )
+  );
+  }
+
+
   void _yesButton() async{
     Fluttertoast.showToast(msg: "Loading...");
     Event eventObj = Event.fromSnapshot(widget.eventData);
     Map<String, dynamic> data = eventObj.toJson();
 
-    if (widget.boolAttend == true){
+    if (!widget.eventData['attending_uid'].contains(widget.currentUser.id)){
           print("ATTEND");
           await Firestore.instance.collection("events").document(widget.eventData.documentID)
               .collection("attendance_uid").document(widget.currentUser.id)
-              .setData({"user_id": widget.currentUser.id});
+              .setData(widget.currentUser.toJson());
+          await Firestore.instance.collection("events").document(widget.eventData.documentID).updateData({"attending_uid": FieldValue.arrayUnion([widget.currentUser.id])});
           await Firestore.instance.collection("users").document(widget.currentUser.id)
               .collection("attending_events").document(widget.eventData.documentID)
               .setData(data).then((value){
             _showDialog(context, "Success", "Successfully attend event");
           });
+
     }else{
         print("UNATTEND");
         await Firestore.instance.collection("events").document(widget.eventData.documentID)
             .collection("attendance_uid").document(widget.currentUser.id)
             .delete();
+        await Firestore.instance.collection("events").document(widget.eventData.documentID).updateData({"attending_uid": FieldValue.arrayRemove([widget.currentUser.id])});
         await Firestore.instance.collection("users").document(widget.currentUser.id)
             .collection("attending_events").document(widget.eventData.documentID)
             .delete().then((value){
