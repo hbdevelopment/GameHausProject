@@ -201,7 +201,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   )),
               new FlatButton(
                 onPressed: () {
-                  addAPIButtonPressed('pc', 'us', textController.text);
+                  addAPIButtonPressed('pc', 'us', textController.text.replaceAll("#","-"));
 
                 //  Navigator.of(context).pop();
 
@@ -220,8 +220,39 @@ void addAPIButtonPressed(String platform, String region, String battleNetID) asy
   bool completed=await addJsonAndAPIInfo(platform, region,battleNetID);
   if (widget.currentUser.listOfJson!=null && widget.currentUser.listOfJson['Overwatch']!=null){
     Navigator.of(context).pop();
+  }else{
+    _showDialog(context, "Unable to show Stats", "Make sure you've entered the correct battleNetID");
   }
 }
+
+void _showDialog(context, title, description) {
+  showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Style.Colors.darkGrey,
+          title: new Text(
+            title,
+            style: Style.TextTemplate.alert_title,
+          ),
+          content: new Text(
+            description,
+            style: Style.TextTemplate.alert_description,
+          ),
+          actions: <Widget>[
+            new FlatButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  "OK",
+                  style: Style.TextTemplate.heading,
+                ))
+          ],
+        );
+      });
+}
+
   Widget _createTFF(hint, controller, keyboard) {
     return Container(
       child: TextFormField(
