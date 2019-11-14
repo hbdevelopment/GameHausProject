@@ -15,7 +15,7 @@ import 'package:ghfrontend/services/date_helper.dart';
 import 'package:ghfrontend/services/users.dart';
 import 'package:ghfrontend/style/theme_style.dart' as Style;
 import 'videoApp.dart';
-//import 'chat_page.dart';
+import 'chatroom.dart';
 import 'gamestore.dart';
 
 class HomePage extends StatefulWidget {
@@ -157,6 +157,34 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         context, MaterialPageRoute(builder: (context) => CreateEventPage()));
   }
 
+
+  void _showDialog(context, title, description) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Style.Colors.darkGrey,
+            title: new Text(
+              title,
+              style: Style.TextTemplate.alert_title,
+            ),
+            content: new Text(
+              description,
+              style: Style.TextTemplate.alert_description,
+            ),
+            actions: <Widget>[
+              new FlatButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(
+                    "OK",
+                    style: Style.TextTemplate.heading,
+                  ))
+            ],
+          );
+        });
+  }
   void _navigateToProfilePage() {
     Navigator.push(
         context,
@@ -599,32 +627,64 @@ Widget buildRoomsList(){
     setState((){});
   }
 
-  void _showDialog(context, title, description) {
+  void _showChatCreationDialog(context) {
+    final textController = TextEditingController();
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             backgroundColor: Style.Colors.darkGrey,
             title: new Text(
-              title,
+              "Create New Chatroom",
               style: Style.TextTemplate.alert_title,
             ),
-            content: new Text(
-              description,
-              style: Style.TextTemplate.alert_description,
-            ),
+            content: _createTFF("Enter Name", textController, TextInputType.text),
             actions: <Widget>[
+              //_createTFF("Enter Name", textController, TextInputType.text),
               new FlatButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
                   child: Text(
-                    "OK",
+                    "Cancel",
                     style: Style.TextTemplate.heading,
-                  ))
+                  )),
+              new FlatButton(
+                onPressed: () {
+                    Firestore.instance.collection('rooms').document(selectedRoomId).collection('chatroom').add({'name': textController.text});
+                    Navigator.of(context).pop();
+                },
+                child: Text(
+                  "Create Chatroom",
+                  style: Style.TextTemplate.heading
+                )
+              )
             ],
           );
         });
+  }
+
+  Widget _createTFF(hint, controller, keyboard) {
+    return Container(
+      child: TextFormField(
+        style:
+            new TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
+        controller: controller,
+        keyboardType: keyboard,
+        autofocus: false,
+        decoration: InputDecoration(
+          enabled: true,
+          hintText: hint,
+          hintStyle: Style.TextTemplate.tf_hint,
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.transparent),
+          ),
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.transparent),
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _createColorsRow() {
@@ -985,6 +1045,76 @@ Widget buildRoomsList(){
     );
   }
 
+  Widget _buildChatRoomsList() {
+    // TODO: update this to work through a service
+    return new StreamBuilder(
+        stream: Firestore.instance
+            .collection('rooms').document(selectedRoomId).collection('chatroom')
+            .limit(30)
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(
+                    Theme.of(context).primaryColor),
+              ),
+            );
+          } else {
+            return ListView.builder(
+              shrinkWrap: true,
+              itemBuilder: (_, int index) => _buildChatRoomBox(
+                  snapshot.data.documents[index],
+                  snapshot.data.documents[index].documentID),
+              itemCount: snapshot.data.documents.length,
+            );
+          }
+        });
+  }
+
+  Widget _buildChatRoomBox(dynamic roomData, doc_id) {
+    return Center(
+        child: Container(
+      color: Style.Colors.darkGrey,
+      padding: EdgeInsets.only(top: 10, bottom: 10),
+      margin: const EdgeInsets.only(bottom: 5),
+      child: InkWell(
+        splashColor: Colors.grey,
+        onTap: () {
+      //    print(roomData['video_url']);
+          // Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //         builder: (context) => VideoApp(
+          //               video_url: roomData['video_url']
+          //             )));
+        //  bool alreadycontainsuser=(roomData['users']!=null) && (roomData['users'].contains(widget.currentUser.id));
+          Navigator.push(context, MaterialPageRoute(
+            builder: (context) => ChatPage(
+                title: roomData['name'],
+                roomId: selectedRoomId,
+                chatId: roomData.documentID,
+                auth: widget.auth,
+                currentUser:widget.currentUser)
+          ));
+          //load relevant event and message
+          //Navigator.pop(context);
+        },
+        child: ListTile(
+          //leading: Image.network(
+        //    roomData['image_url'],
+        //  ),
+          title: Text(
+            roomData['name'],
+            style: Style.TextTemplate.drawer_listTitle,
+          ),
+          //subtitle: Text('ID: ' + roomData['id']),
+        ),
+      ),
+    ));
+  }
+
+
 //  void _navigateToChat(String roomId, String roomName) {
 ////    Navigator.push(
 ////        context,
@@ -1043,7 +1173,11 @@ Widget buildRoomsList(){
               padding: EdgeInsets.only(top: 5, right: 5),
               child: new IconButton(
                 onPressed: () {
+                  if (controller.index==0){
                   _navigateToCreateEventPage();
+                }else{
+                  _showChatCreationDialog(context);
+                }
                 },
                 icon: Image.asset('assets/images/gh_add_icon.png'),
               ),
@@ -1093,7 +1227,11 @@ Widget buildRoomsList(){
           children: <Widget>[
             new TabBarView(controller: controller, children: <Widget>[
               _buildEventList(),
-              _buildChatView(),
+              //ChatPage(
+              //    roomId: selectedRoomId,
+              //    auth: widget.auth,
+              //    currentUser:widget.currentUser),
+              _buildChatRoomsList(),
             ]),
             _createColorsRow(),
           ],
