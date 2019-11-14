@@ -177,6 +177,73 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  void _showAddAPIDialog(context){
+    final textController = TextEditingController();
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Style.Colors.darkGrey,
+            title: new Text(
+              "Add Overwatch Stats",
+              style: Style.TextTemplate.alert_title,
+            ),
+            content: _createTFF("Enter BattleNet ID", textController, TextInputType.text),
+            actions: <Widget>[
+              //_createTFF("Enter Name", textController, TextInputType.text),
+              new FlatButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(
+                    "Cancel",
+                    style: Style.TextTemplate.heading,
+                  )),
+              new FlatButton(
+                onPressed: () {
+                  addAPIButtonPressed('pc', 'us', textController.text);
+
+                //  Navigator.of(context).pop();
+
+                },
+                child: Text(
+                  "Add",
+                  style: Style.TextTemplate.heading
+                )
+              )
+            ],
+          );
+        });
+  }
+
+void addAPIButtonPressed(String platform, String region, String battleNetID) async{
+  bool completed=await addJsonAndAPIInfo(platform, region,battleNetID);
+  if (widget.currentUser.listOfJson!=null && widget.currentUser.listOfJson['Overwatch']!=null){
+    Navigator.of(context).pop();
+  }
+}
+  Widget _createTFF(hint, controller, keyboard) {
+    return Container(
+      child: TextFormField(
+        style:
+            new TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
+        controller: controller,
+        keyboardType: keyboard,
+        autofocus: false,
+        decoration: InputDecoration(
+          enabled: true,
+          hintText: hint,
+          hintStyle: Style.TextTemplate.tf_hint,
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.transparent),
+          ),
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.transparent),
+          ),
+        ),
+      ),
+    );
+  }
 
   /*
    * this method is to create Overwatch Stats block
@@ -184,11 +251,17 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget _createOverwatchGameStats(){
 
     if(mUser.listOfJson==null || mUser.listOfJson['Overwatch']==null){
-
+      if (widget.isMe==true){
+      return FlatButton(
+          child: Text("Add Overwatch Info", style: Style.TextTemplate.drawer_listTitle),
+          onPressed: () {_showAddAPIDialog(context);},
+      );
+    }else{
       return SizedBox(
         width: 0,
         height: 0,
       );
+    }
     }else{
 
       print("Greetings");
@@ -719,6 +792,16 @@ class _ProfilePageState extends State<ProfilePage> {
     bool isnull=(result==null);
     print("Data2: "+isnull.toString());
   }
+
+Future<bool> addJsonAndAPIInfo(String platform, String region, String battleNetID) async{
+  var result=await APICall(currentUser: widget.currentUser).callOverwatchAPI(widget.currentUser.id, platform, region, battleNetID);
+  if (result!=null){
+    _getUserDetails();
+    APICall(currentUser: widget.currentUser).AddPlayerAPIInfo(widget.currentUser.id, platform, region, battleNetID).then((completed){return completed;});
+  }
+  return false;
+
+}
 
   updatePlayerOverwatchInfo() async{
     if (widget.currentUser.listOfAPI["Overwatch"]==null){
