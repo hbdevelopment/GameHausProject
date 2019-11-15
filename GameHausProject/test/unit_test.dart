@@ -16,10 +16,13 @@ void main(){
   //url: https://ow-api.com/v1/stats/pc/us/cats-11481/profile
 
   test('Test sign in', (){
-    var auth = _SignInPageState();
-    auth._signIn("testghaus.gmail.com", "1234567890");
-    bool result = auth.isSignedIn();
+    //setup
+    var auth = _SignInPageState(); //create object
 
-    expect(true, result);
+    //test
+    auth._signIn("testghaus.gmail.com", "1234567890");
+    bool result = auth.isSignedIn(); //get result
+
+    expect(true, result); //verify
   });
 }
