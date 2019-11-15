@@ -43,6 +43,7 @@ dependencies:
   dots_indicator: ^1.0.0
   giphy_client: ^0.2.0
   video_player:
+  mockito: ^4.1.1
 
 dev_dependencies:
 

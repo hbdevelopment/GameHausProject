@@ -18,7 +18,16 @@ class SignInPage extends StatefulWidget {
   }
 }
 
+@visibleForTesting
 class _SignInPageState extends State<SignInPage> {
+
+  bool signedIn = false;
+  void signingin() {
+    signedIn = true;
+  }
+  bool isSignedIn () {
+    return signedIn;
+  }
 
   final _formKey = new GlobalKey<FormState>();
   final emailController = TextEditingController();
@@ -162,6 +171,7 @@ class _SignInPageState extends State<SignInPage> {
     try {
       String userId = await widget.auth.signIn(email, password);
       print('Signed in: $userId');
+      signingin();
       widget.onSignedIn();
       Navigator.of(context).pop();
     } catch (e) {
@@ -170,6 +180,7 @@ class _SignInPageState extends State<SignInPage> {
     }
   }
 
+  
   void _signInValidation() async{
 
     String email = emailController.text;
