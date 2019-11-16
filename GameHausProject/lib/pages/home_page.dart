@@ -18,6 +18,7 @@ import 'videoApp.dart';
 import 'chatroom.dart';
 import 'gamestore.dart';
 
+@visibleForTesting
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.auth, this.currentUser, this.onSignedOut, this.users})
       : super(key: key);
@@ -31,6 +32,7 @@ class HomePage extends StatefulWidget {
   State<StatefulWidget> createState() => new _HomePageState();
 }
 
+@visibleForTesting
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   //final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
@@ -80,12 +82,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
 
   }
-
+  @visibleForTesting
   void _checkEmailVerification() async {
     _isEmailVerified = await widget.auth.isEmailVerified();
     if (!_isEmailVerified) {
       _showVerifyEmailDialog();
     }
+  }
+  @visibleForTesting
+  bool isEmailVerified(){
+    return _isEmailVerified;
   }
 
   void _resentVerifyEmail() {
