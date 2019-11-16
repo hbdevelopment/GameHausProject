@@ -166,7 +166,13 @@ class SignInPageState extends State<SignInPage> {
   }
 
   void testSignIn(email, password){
-    signingin();
+    if(password == '1234567890'){
+      print('Signed in: $email');
+      signingin();
+    } else {
+      print('Fail Signed in: Wrong Password');
+    }
+    
   }
 
   void _signIn(email, password) async {

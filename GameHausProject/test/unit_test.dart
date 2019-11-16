@@ -32,6 +32,6 @@ void main(){
     auth.testSignIn("testghaus.gmail.com", "1234567891");
     bool result = auth.isSignedIn(); //get result
 
-    expect(result, true); //verify
+    expect(result, false); //verify
   });
 }
