@@ -18,11 +18,11 @@ class CreateEventPage extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return _CreateEventPageState();
+    return CreateEventPageState();
   }
 }
 
-class _CreateEventPageState extends State<CreateEventPage> {
+class CreateEventPageState extends State<CreateEventPage> {
   final dateController = TextEditingController();
   final locationController = TextEditingController();
   final timeController = TextEditingController();
@@ -45,9 +45,16 @@ class _CreateEventPageState extends State<CreateEventPage> {
   String description = "";
 
   String selectedRoomId = "";
+  //for testing
+  String getSelectedRoomId(){ 
+    return selectedRoomId;
+  }
+  String getSelectedGame(){
+    return selectedGame;
+  }
 
   GiphyGif selectedGif;
-
+  
   @override
   Widget build(BuildContext context) {
     final dateFormat = DateFormat("yyyy-MM-dd");
@@ -596,6 +603,27 @@ BoxDecoration _borderSelection(){
       }
 
     });
+  }
+
+  void chooseAGame(game) {
+      selectedGame = game;
+      switch (game){
+        case "FORTNITE":
+          selectedRoomId = "nYQT0NBBAQGRYI3TSVQ0";
+          break;
+        case "DOTA 2":
+          selectedRoomId = "m6p76gE4hnigPW4Bi6hJ";
+          break;
+        case "LOL":
+          selectedRoomId = "eGKPNy54lvyQoatYE5Mx";
+          break;
+        case "OVERWATCH":
+          selectedRoomId = "5crWuxFMuNY7E9G9xdz9";
+          break;
+        case "Madison eSports Club":
+          selectedRoomId="6CkGuBewHOuPOKmhl2NI";
+        break;
+      }
   }
 
   Future _createEventButtonPressed() async {
