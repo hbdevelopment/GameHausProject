@@ -8,6 +8,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ghfrontend/models/guser.dart';
 import 'package:ghfrontend/services/authentication.dart';
 
+@visibleForTesting
 class ChatPage extends StatefulWidget {
   ChatPage(
       {Key key,
@@ -28,6 +29,7 @@ class ChatPage extends StatefulWidget {
   State<StatefulWidget> createState() => new _ChatPageState();
 }
 
+@visibleForTesting
 class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
@@ -125,6 +127,7 @@ class _ChatPageState extends State<ChatPage> with TickerProviderStateMixin {
 
 
 
+  @visibleForTesting
   void _handleSubmitted(String text) {
     print("New Chatroom");
     _textController.clear();
