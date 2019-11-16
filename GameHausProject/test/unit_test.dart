@@ -14,15 +14,24 @@ void main(){
   //password: 1234567890
   //userid: tSOy9V73AhfBjbBWL0Ais3SmdzI2
   //url: https://ow-api.com/v1/stats/pc/us/cats-11481/profile
+    SignInPageState auth; //create object
+  setUp((){
+    auth = new SignInPageState();
+  });
 
-  test('Test sign in', (){
-    //setup
-    var auth = _SignInPageState(); //create object
-
+  test('Test sign in right password', (){
     //test
-    auth._signIn("testghaus.gmail.com", "1234567890");
+    auth.testSignIn("testghaus.gmail.com", "1234567890");
     bool result = auth.isSignedIn(); //get result
 
-    expect(true, result); //verify
+    expect(result, true); //verify
+  });
+
+  test('Test sign in wrong password', (){
+    //test
+    auth.testSignIn("testghaus.gmail.com", "1234567891");
+    bool result = auth.isSignedIn(); //get result
+
+    expect(result, true); //verify
   });
 }

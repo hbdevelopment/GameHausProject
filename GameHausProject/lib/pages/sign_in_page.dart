@@ -14,12 +14,11 @@ class SignInPage extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return _SignInPageState();
+    return SignInPageState();
   }
 }
 
-@visibleForTesting
-class _SignInPageState extends State<SignInPage> {
+class SignInPageState extends State<SignInPage> {
 
   bool signedIn = false;
   void signingin() {
@@ -164,6 +163,10 @@ class _SignInPageState extends State<SignInPage> {
         },
       ),
     );
+  }
+
+  void testSignIn(email, password){
+    signingin();
   }
 
   void _signIn(email, password) async {
