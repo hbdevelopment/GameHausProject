@@ -4,6 +4,9 @@ import 'package:ghfrontend/pages/sign_in_page.dart';
 import 'package:ghfrontend/pages/create_event_page.dart';
 import 'package:ghfrontend/services/authentication.dart';
 import 'package:mockito/mockito.dart';
+import 'chatroom.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ghfrontend/pages/home_page.dart';
 
 class FirebaseAuthMock extends Mock implements Auth {}
 
@@ -77,4 +80,41 @@ void main() {
       expect(event.getSelectedRoomId(), "6CkGuBewHOuPOKmhl2NI"); //verify
     });
   });
+
+  test('Test checkEmailVerification', (){
+    var homePage = new HomePage();
+    var myHPState = new _HomePageState();
+    myHPState._checkEmailVerification();
+    bool results = myHPState.isEmailVerified();
+    expect(true, results);
+  });
+  test('Test chatroom handling new message submission', (){
+    var chatRoom = new ChatPage();
+    var documentRef = Firestore.instance
+    .collection("rooms")
+    .document('5crWuxFMuNY7E9G9xdz9')
+    .collection('chatroom')
+    .document("KhbeWfxpAyNnepwRwKcC")
+    .collection('messages')
+        .document('1573711348703');
+        Firestore.instance.runTransaction((transaction) async {
+      await transaction.set(documentRef, {
+        'fromId': 'TX05iDkFDcVdYdir7NFlbjqMLvd2',
+        'fromNickname': 'StevenLiu',
+        'timestamp': '1573711348765',
+        'content': 'hello',
+        'type': 0
+      });
+    });
+    var dbMessage = Firestore.instance.collection("rooms")
+    .document('5crWuxFMuNY7E9G9xdz9')
+    .collection('chatroom')
+    .document("KhbeWfxpAyNnepwRwKcC")
+    .collection('messages')
+        .document('1573711348703').toString();
+    String realMessage = 'hello';
+    var results = (realMessage.compareTo(dbMessage));
+    expect(1, results);
+  });
+
 }

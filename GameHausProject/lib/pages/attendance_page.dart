@@ -17,7 +17,7 @@ class AttendancePage extends StatefulWidget {
   AttendancePage({Key key,this.eventData, this.currentUser, this.boolAttend}) : super(key: key);
   final DocumentSnapshot eventData;
   final GUser currentUser;
-  final bool boolAttend;
+  bool boolAttend;
   @override
   State<StatefulWidget> createState() {
     return _AttendancePageState();
@@ -30,9 +30,10 @@ class _AttendancePageState extends State<AttendancePage> {
   Users users;
   GUser mUser = GUser("","","","","",[""],{"":""}, {"":""});
   VoidCallback onSignedOut;
-
+  //bool isAttending=widget.boolAttend;
   @override
   void initState() {
+  //  isAttending=widget.boolAttend;
     // TODO: implement initState
     //_getUserDetails();
     super.initState();
@@ -323,31 +324,53 @@ class _AttendancePageState extends State<AttendancePage> {
     Fluttertoast.showToast(msg: "Loading...");
     Event eventObj = Event.fromSnapshot(widget.eventData);
     Map<String, dynamic> data = eventObj.toJson();
-
-    if (!widget.eventData['attending_uid'].contains(widget.currentUser.id)){
+    var db=Firestore.instance;
+    if (widget.boolAttend){
           print("ATTEND");
-          await Firestore.instance.collection("events").document(widget.eventData.documentID)
-              .collection("attendance_uid").document(widget.currentUser.id)
-              .setData(widget.currentUser.toJson());
-          await Firestore.instance.collection("events").document(widget.eventData.documentID).updateData({"attending_uid": FieldValue.arrayUnion([widget.currentUser.id])});
-          await Firestore.instance.collection("users").document(widget.currentUser.id)
-              .collection("attending_events").document(widget.eventData.documentID)
-              .setData(data).then((value){
-            _showDialog(context, "Success", "Successfully attend event");
-          });
+
+
+        //   await Firestore.instance.collection("events").document(widget.eventData.documentID)
+        //       .collection("attendance_uid").document(widget.currentUser.id)
+          //     .setData(widget.currentUser.toJson());
+        //   await Firestore.instance.collection("events").document(widget.eventData.documentID).updateData({"attending_uid": FieldValue.arrayUnion([widget.currentUser.id])});
+          // await Firestore.instance.collection("users").document(widget.currentUser.id)
+          //     .collection("attending_events").document(widget.eventData.documentID)
+          //     .setData(data).then((value){
+          //   _showDialog(context, "Success", "Successfully attend event");
+          // });
+          //var db=Firestore.instance;
+          var batch=db.batch();
+          batch.setData(db.collection("events").document(widget.eventData.documentID)
+              .collection("attendance_uid").document(widget.currentUser.id),widget.currentUser.toJson());
+          batch.updateData(db.collection("events").document(widget.eventData.documentID), {"attending_uid": FieldValue.arrayUnion([widget.currentUser.id])});
+          await batch.commit();
+          _showDialog(context, "Success", "Successfully attend event");
+
+
 
     }else{
         print("UNATTEND");
-        await Firestore.instance.collection("events").document(widget.eventData.documentID)
-            .collection("attendance_uid").document(widget.currentUser.id)
-            .delete();
-        await Firestore.instance.collection("events").document(widget.eventData.documentID).updateData({"attending_uid": FieldValue.arrayRemove([widget.currentUser.id])});
-        await Firestore.instance.collection("users").document(widget.currentUser.id)
-            .collection("attending_events").document(widget.eventData.documentID)
-            .delete().then((value){
-          _showDialog(context, "Success", "Successfully unattend event");
-        });
+        var batch=db.batch();
+        batch.delete(db.collection("events").document(widget.eventData.documentID)
+            .collection("attendance_uid").document(widget.currentUser.id));
+        batch.updateData(db.collection("events").document(widget.eventData.documentID), {"attending_uid": FieldValue.arrayRemove([widget.currentUser.id])});
+        await batch.commit();
+        // await Firestore.instance.collection("events").document(widget.eventData.documentID)
+        //     .collection("attendance_uid").document(widget.currentUser.id)
+        //     .delete();
+      //   await Firestore.instance.collection("events").document(widget.eventData.documentID).updateData({"attending_uid": FieldValue.arrayRemove([widget.currentUser.id])});
+        // await Firestore.instance.collection("users").document(widget.currentUser.id)
+        //     .collection("attending_events").document(widget.eventData.documentID)
+        //     .delete().then((value){
+      _showDialog(context, "Success", "Successfully unattend event");
+        // });
+
     }
+  //  isAttending=!isAttending;
+
+    setState((){
+      widget.boolAttend=!widget.boolAttend;
+    });
   }
 
   void _noButton(){
